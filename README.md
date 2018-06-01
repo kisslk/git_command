@@ -6,6 +6,8 @@
 >* 版本库（Repository）： 工作区有一个隐藏目录.git， 是Git的版本库
 >* 远程仓库（Remote）：托管在因特网或其他网络中的项目的版本库，可供多人分布式开发
 
+![git](https://github.com/kisslk/git_command/blob/master/git.jpg)
+
 #### (1) Git 配置项
 
 #显示当前的Git配置项  
