@@ -18,5 +18,5 @@ def write_file(file, content):
     pageFile.close()
 
 
-htmlcode = get_html('http://tieba.baidu.com/p/1753935195')
-write_file('pageCode.txt', htmlcode)
+# htmlcode = get_html('http://tieba.baidu.com/p/1753935195')
+# write_file('pageCode.txt', htmlcode)
