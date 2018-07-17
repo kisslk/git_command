@@ -1,3 +1,6 @@
+
+## jrebel配置方法
+
 - Setting -> Compiler -> 勾选Build project automatically
 
 - Ctrl + Shift + Alt + /  -> Registry -> 勾选compiler.automarke.allow.when.app.running
