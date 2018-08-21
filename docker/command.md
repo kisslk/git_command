@@ -4,7 +4,7 @@ docker build -t centos:7tarsz .
 
 - 进入容器内部
 docker run -i -t --net=host --privileged=true tars:16 /bin/bash  
-docker run -d --net=host -p 30011:8080 --privileged=true --name myspring springk8s:latest  
+docker run -d --net=host -p 30011:8080 --privileged=true --name myspring springk8s:lastest  
 
   docker attach 7e15322fae59（一个bash）  
 
@@ -42,3 +42,16 @@ on-failure: 只有当容器的退出代码为非0值得时候才会自动重启�
 
 - 1.12.x是老的版本号，17.x后就有ce版和ee版了
 
+docker run --net=host --privileged=true -d -p 9797:8080 --name springk8s springk8s:1  
+docker run -d --net=host --privileged=true -p 8001:8001 --name companyvent -v /root/conf:/root/conf companyevent:lastest  
+docker run --net=host --privileged=true -d -p 9797:8080 --name springk8s springk8s:1  
+
+[test](http://172.18.44.66:8001/stocksData/companyEvent/getCompanyEvent?secuCode=000698&beginIndex=0&recordNum=5)
+
+docker run -d --net=host --privileged=true -p 8001:8001 --name companyevent -v /root/conf:/root/conf companyevent:lastest  
+docker build -t companyevent:lastest .  
+
+- docker启动失败
+查看/etc/docker/daemon.json这个文件，把多余的删除  
+修改/etc/docker/daemon.json这个文件它立即起效可以使用命令为：  
+systemctl reload docker  
