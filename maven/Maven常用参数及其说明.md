@@ -28,3 +28,12 @@
 * -V, --show-version      Display version information WITHOUT stopping build  
 * -v, -- version          Display version information  
 * -X, --debug             输出详细信息，debug模式  
+* -cpu, --check-plugin-updates          【废弃】，仅为了向后兼容
+* -npr, --no-plugin-registry            【废弃】，仅为了向后兼容
+* -npu, --no-plugin-updates             【废弃】，仅为了向后兼容
+* -up, --update-plugins                 【废弃】，仅为了向后兼容
+  
+- 必选的Profile一遍配置在settings.xml中，始终激活；
+- 可选的Profile一般配置在pom.xml中，持续集成时，根据不同环境激活不同的Profile；
+- $mvn help:active-profiles 列出当前激活的Profile
+- $mvn help:all-profiles 列出当前所有的Profile
