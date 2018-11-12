@@ -126,7 +126,7 @@ $mvn install:install-file -DgroupId=com -DartifactId=client -Dversion=0.1.0 -Dpa
 -DdownloadJavadocs=true  
 
 
-
-
+- 查看冲突
+  - mvn dependency:tree -Dverbose -Dincludes=${name}:${name}  
 
 
