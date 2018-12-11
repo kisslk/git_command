@@ -1,0 +1,323 @@
+
+## 1 Spring IoC Container
+
+#### 1.1 spring IoC Container and Beans 
+- container
+  - BeanFactory  提供框架配置和基本功能
+  - ApplicationContext  BeanFactory的完整超集，添加了更多特定的功能
+    - 接口实现
+      - ClassPathXmlApplicationContext
+      - FileSystemXmlApplicationContext
+
+#### 1.2 Container Overview
+  - Configuration Metadata
+    - xml
+    - annotation
+    - java config
+        - @Configuration
+        - @Bean
+        - @Import
+        - @DependsOn
+    - Groovy Bean Definition DSL
+  - Useing the Container 
+    - java
+    ```java
+    // create and configure beans
+    ApplicationContext context = new ClassPathXmlApplicationContext("services.xml", "daos.xml");
+
+    // retrieve configured instance
+    PetStoreService service = context.getBean("petStore", PetStoreService.class);
+
+    // use configured instance
+    List<String> userList = service.getUsernameList();
+    ```
+    - Groovy
+    
+#### 1.3 Bean Overview
+  - 注意
+    - 类的全限定名，通常是正在定义的bean 的实际实现类
+    - Bean行为配置元素，说明bean在容器中的行为方式（范围、生命周期回调等）
+    - 引用bean执行其工作所需的其他bean，也称作依赖项
+    - 其他配置，例如，池的大小限制或在管理连接池的Bean中使用的连接数
+  - properties
+    - Class
+    - Name
+    - Scope
+    - Constructor arguments
+    - Properties
+    - Autowiring mode
+    - Lazy initialization mode
+    - Initialization method  callback
+    - Destruction method  callback
+  - Naming Beans 
+    - bean names start with a lowercase letter and are camel-cased from there
+    - 如果没有定义name，通常情况下spring按照前面描述的规则为未命名的组件生产bean名称：基本上，采用简单的类名并将其初始字符转换为小写
+    - 但是，如果类的第一个和第二个字符都是大写，原始名称将会被保留
+    - Aliasing a Bean outside the Bean Definition 别名
+      ```java
+        <alias name="fromName" alias="toName"/>
+      ```
+  - Instantiating Beans
+    - Instantiation with a Static Factory Method
+        ```xml
+        <bean id="clientService" class="examples.ClientService" factory-method="createInstance"/>
+        ```
+        ```java
+        public class ClientService {
+            private static ClientService clientService = new ClientService();
+            private ClientService() {}
+
+            public static ClientService createInstance() {
+                return clientService;
+            }
+        }
+        ```
+    - Instantiation by Using an Instance Factory Method
+        ```xml
+        <!-- the factory bean, which contains a method called createInstance() -->
+        <bean id="serviceLocator" class="examples.DefaultServiceLocator">
+            <!-- inject any dependencies required by this locator bean -->
+        </bean>
+
+        <!-- the bean to be created via the factory bean -->
+        <bean id="clientService"
+            factory-bean="serviceLocator"
+            factory-method="createClientServiceInstance"/>
+        ```
+        ```java
+        public class DefaultServiceLocator {
+
+            private static ClientService clientService = new ClientServiceImpl();
+
+            public ClientService createClientServiceInstance() {
+                return clientService;
+            }
+        }
+        ```
+#### 1.4 Dependencies
+  - 1.4.1 Dependency Injection
+    - Constructor-based
+      - The Spring team generally advocates constructor injection, as it lets you implement application components as immutable objects and ensures that required dependencies are not null. Furthermore, constructor-injected components are always returned to the client (calling) code in a fully initialized state. As a side note, a large number of constructor arguments is a bad code smell, implying that the class likely has too many responsibilities and should be refactored to better address proper separation of concerns.
+    - Setter-based 
+      - Setter injection should primarily only be used for optional dependencies that can be assigned reasonable default values within the class. Otherwise, not-null checks must be performed everywhere the code uses the dependency. One benefit of setter injection is that setter methods make objects of that class amenable to reconfiguration or re-injection later. Management through JMX MBeans is therefore a compelling use case for setter injection.
+    - Circular dependencies
+      - Setter-based > Constructor-based
+  - 1.4.3 depends-on
+    - The depends-on attribute can explicitly force one or more beans to be initialized before the bean using this element is initialized. 
+  - 1.4.4 Lazy-initialized Beans
+    - 一般情况下，容器创建、配置所有单例bean的时候，会立即发现配置或环境错误，而不是一段时间之后
+    - 如果必须要用懒加载 则lazy-init="true"
+    - You can also control lazy-initialization at the container level by using the default-lazy-init attribute on the <beans/> element, a the following example shows:
+    ```xml
+       <beans default-lazy-init="true">
+           <!-- no beans will be pre-instantiated... -->
+       </beans>
+    ```
+  - 1.4.5. Autowiring Collaborators
+    - mode
+      - no
+      - byName
+      - byType
+      - constructor
+  - 1.4.6 Method Injection
+    - 动态改变bean中引用的bean
+    - 查找注入
+      - spring通过CGLib动态修改字节码
+      ```xml
+        <!-- a stateful bean deployed as a prototype (non-singleton) -->
+        <bean id="myCommand" class="fiona.apple.AsyncCommand" scope="prototype">
+            <!-- inject dependencies here as required -->
+        </bean>
+
+        <!-- commandProcessor uses statefulCommandHelper -->
+        <bean id="commandManager" class="fiona.apple.CommandManager">
+            <lookup-method name="createCommand" bean="myCommand"/>
+        </bean>
+      ```
+    - 方法替换 不推荐
+      ```xml
+        <bean id="movieStar" class="com.zing.method_injection.MovieStar">
+            <replaced-method name="getActor" replacer="superStarMovie"></replaced-method>
+        </bean>
+        <bean id="superStarMovie" class="com.zing.method_injection.SuperStar"></bean>
+      ```
+    - ApplicationContextAware 
+      - Method Injection, a somewhat advanced feature of the Spring IoC container
+
+#### 1.5 Bean Scopes
+  - 配置spring bean的作用域
+    - singleton
+    - prototype
+      - 不管何种作用域，容器都会调用所有对象的初始化生命周期回调方法，而对prototype而言，任何配置好的析构生命周期回调方法都将不会被调用
+    - request
+    - session
+    - application
+    - websocket
+  - Customs Scope
+
+#### 1.6 Custom the Nature of a Bean
+  - Lifecycle Callbacks
+    - JSR-250
+      - @PostConstruct
+      - @PreDestroy
+    - If you dont want use JSR-250
+      - init-method
+      - destroy-method
+    - BeanPostProcessor
+      - Internally, the Spring Framework uses BeanPostProcessor implementations to process any callback interfaces it can find and call the appropriate methods. If you need custom features or other lifecycle behavior Spring does not by default offer, you can implement a BeanPostProcessor yourself. 
+    
+    - Initialization Callbacks
+      - org.springframework.beans.factory.InitializingBean 
+      ```java
+      //not recommend to use it, because it unnecessarily couples the code to Spring
+      void afterPropertiesSet() throws Exception; 
+
+      public class AnotherExampleBean implements InitializingBean {
+          public void afterPropertiesSet() {
+              // do some initialization work
+          }
+      }
+      ```
+      - init-method (xml-based configuration)
+      ```java
+        public class ExampleBean {
+            public void init() {
+                // do some initialization work
+            }
+        }
+      ```
+      ```xml
+        <bean id="exampleInitBean" class="examples.ExampleBean" init-method="init"/>
+      ```
+      - @PostConstruct (java-based configuration)
+    - Destruction Callbacks
+      - org.springframework.beans.factory.DisposableBean
+      ```java
+      public class AnotherExampleBean implements DisposableBean {
+        public void destroy() {
+            // do some destruction work (like releasing pooled connections)
+        }
+      }
+      ```
+      - destroy-method (xml-based configuration)
+      - @PreDestroy
+    - Default Initialization and Destruction Methods
+    ```java
+        public class DefaultBlogService implements BlogService {
+
+            private BlogDao blogDao;
+
+            public void setBlogDao(BlogDao blogDao) {
+                this.blogDao = blogDao;
+            }
+
+            // this is (unsurprisingly) the initialization callback method
+            public void init() {
+                if (this.blogDao == null) {
+                    throw new IllegalStateException("The [blogDao] property must be set.");
+                }
+            }
+        }
+    ```
+    ```xml
+        <beans default-init-method="init">
+            <bean id="blogService" class="com.something.DefaultBlogService">
+                <property name="blogDao" ref="blogDao" />
+            </bean>
+        </beans>
+    ```
+    - Combining Lifecycle mechanisms
+      - Initialization order
+        - @PostConstruct
+        - afterPropertiesSet() as defined by the InitializingBean callback interface
+        - init-method
+      - Destruction order
+        - @PreDestroy
+        - destroy() as defined by the DisposableBean callback interface
+        - destroy-method
+    - Startup and Shutdown Callbacks 启动和关闭回调
+      - Lifecycle
+      ```java
+        public interface Lifecycle {
+            void start();
+            void stop();
+            boolean isRunning();
+        }
+      ```
+      - LifecycleProcessor
+      ```java
+        public interface LifecycleProcessor extends Lifecycle {
+            void onRefresh();
+            void onClose();
+        }
+      ```
+
+      - SmartLifecycle
+        - SmartLifecycle 是一个接口。当Spring容器加载所有bean并完成初始化之后，会接着回调实现该接口的类中对应的方法（start()方法）。
+        ```java
+            public interface Phased {
+                /**
+                 * 如果工程中有多个实现接口SmartLifecycle的类，
+                 * 则这些类的start的执行顺序getPhase方法返回值从小到大执行 
+                 * 例如：1比2先执行，-1比0先执行。 stop方法的执行顺序则相反，  
+                 * getPhase返回值较大类的stop方法先被调用，小的后被调用。
+                 */
+                int getPhase();
+            }
+
+            public interface SmartLifecycle extends Lifecycle, Phased {
+                /**
+                 * 根据该方法的返回值决定是否执行start方法。<br/> 
+                 * 返回true时start方法会被自动执行，返回false则不会。
+                 */
+                boolean isAutoStartup();
+
+                /**
+                 * SmartLifecycle子类的才有的方法，当isRunning方法返回true时，
+                 * 该方法才会被调用。
+                 */
+                void stop(Runnable callback);
+            }
+        ```
+      - 非web应用关闭Spring IoC容器
+      ```java
+        import org.springframework.context.ConfigurableApplicationContext;
+        import org.springframework.context.support.ClassPathXmlApplicationContext;
+
+        public final class Boot {
+
+            public static void main(final String[] args) throws Exception {
+                ConfigurableApplicationContext ctx = new ClassPathXmlApplicationContext("beans.xml");
+
+                // add a shutdown hook for the above context...
+                ctx.registerShutdownHook();
+
+                // app runs here...
+
+                // main method exits, hook is called prior to the app shutting down...
+            }
+        }
+      ```
+
+  - ApplicationContextAware and BeanNameAware
+    - ApplicationContextAware 
+    ```java
+        public interface ApplicationContextAware {
+            //这样可以显示的操作和创建ApplicationContext了
+            //但是spring不推荐这样做,这样会耦合代码到spring上,同时也没有遵循IoC的风格
+            void setApplicationContext(ApplicationContext applicationContext) throws BeansException;
+        }
+    ```
+    - BeanNameAware
+    ```java
+        public interface BeanNameAware {
+            //用于属性配置完以后，初始化回调之前
+            void setBeanName(String name) throws BeansException;
+        }
+    ```
+  - other Aware Interfaces
+    - 违反spring IoC原则,除非必要，最好不用使用
+
+  
+
+
