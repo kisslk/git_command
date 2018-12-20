@@ -71,7 +71,8 @@ $git checkout [branch-name]
 #切换到上一个分支  
 $git checout -  
 #建立追踪关系，在现有分支与指定的远程分支之间  
-$git branch --set-upstream [branch] [remote-branch]  
+$git branch --set-upstream [branch] [remote-branch]   已经废弃  
+$git branch --set-upstream-to=[remote-branch]  
 #合并指定分支到当前分支  
 $git merge [branch]  
 #选择一个commit， 合并在当前分支  
