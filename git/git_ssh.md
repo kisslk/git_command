@@ -1,1 +1,2 @@
 - test`
+- gitlab和github可以同时使用，只要把gitlab的sshKey放在GitHub上就可以
