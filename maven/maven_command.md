@@ -2,11 +2,11 @@
 ### maven常用命令
 
 - 设置新的版本号
-$mvn versions:set -DnewVersion=1.1.0
+$mvn versions:set -DnewVersion=1.1.0  
 - 当新版本号设置不正确时可以撤销新版本号的设置
-$mvn versions:revert
+$mvn versions:revert  
 - 确认新版本号无误后提交新版本号的设置
-$mvn versions:commit
+$mvn versions:commit  
 
 - 创建maven的普通Java项目  
 $mvn archetype:create -DgroupId=packageName -DartifactId=projectName
