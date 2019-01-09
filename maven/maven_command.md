@@ -1,6 +1,9 @@
 
 ### maven常用命令
 
+- 修改版本号
+$mvn versions:set -DnewVersion=1.0.2
+
 - 创建maven的普通Java项目  
 $mvn archetype:create -DgroupId=packageName -DartifactId=projectName
 - 创建Maven的web项目  
