@@ -81,7 +81,8 @@ $git cherry-pick [commit]
 $git branch -d [barnch-name]  
 #删除远程分支  
 $git push origin --delete [branch-name]  
-$git branch -dr [remote-branch]  
+$git branch -dr [remote-branch] 
+$git push origin :[branch-name] 
 
 #### (6)Git的标签
 #列出所有的tag  
@@ -160,3 +161,18 @@ $git revert [commit]
 #暂时将未提交的变化移除，稍后再移入  
 $git stash   
 $git stash pop  
+
+#### (10) 远程代码库回滚
+#这个是重点要说的内容，过程比本地回滚要复杂
+#应用场景：自动部署系统发布后发现问题，需要回滚到某一个commit，再重新发布
+#原理：先将本地分支退回到某个commit，删除远程分支，再重新push本地分支
+#操作步骤：
+
+$1、git checkout the_branch  
+$2、git pull  
+$3、git branch the_branch_backup //备份一下这个分支当前的情况  
+$4、git reset --hard the_commit_id //把the_branch本地回滚到the_commit_id  
+$5、git push origin :the_branch //删除远程 the_branch  
+$6、git push origin the_branch //用回滚后的本地分支重新建立远程分支  
+$7、git push origin :the_branch_backup //如果前面都成功了，删除这个备份分支  
+$如果使用了gerrit做远程代码中心库和code review平台，需要确保操作git的用户具备分支的push权限，并且选择了 Force Push选项（在push权限设置里有这个选项）
