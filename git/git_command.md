@@ -176,3 +176,7 @@ $5、git push origin :the_branch //删除远程 the_branch
 $6、git push origin the_branch //用回滚后的本地分支重新建立远程分支  
 $7、git push origin :the_branch_backup //如果前面都成功了，删除这个备份分支  
 $如果使用了gerrit做远程代码中心库和code review平台，需要确保操作git的用户具备分支的push权限，并且选择了 Force Push选项（在push权限设置里有这个选项）
+  
+$1、git reset --hard HEAD~1  
+$2、git push -f origin master   
+
