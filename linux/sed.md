@@ -38,6 +38,7 @@ Sed 主要用来自动编辑一个或多个文件、简化对文件的反复操�
 > Linux is a free unix-type opterating system.  
 > This is a linux testfile!  
 > Linux test 
+
 使用sed命令后，输出结果如下：
 
 > $ sed -e 4a\newline testfile #使用sed 在第四行后添加新字符串  
