@@ -17,6 +17,7 @@
 - 设置environment
 - 设置resourceLoader和classLoader
 - 启动ApplicationContextInitializer初始化器
+  - ApplicationContextInitializer.initializa(context) Apollo在这里处理了Environment
   - 装载BeanFactoryPostProcesssor 
 - listener发布ConfigurableApplicationContext时
 - 注册springApplicationArguments到容器
