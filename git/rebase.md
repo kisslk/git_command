@@ -16,5 +16,5 @@
 # However, if you remove everything, the rebase will be aborted.
 #
 # test rebase
-#
+# test rebase 2
 #
