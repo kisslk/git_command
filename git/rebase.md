@@ -15,12 +15,3 @@
 #
 # However, if you remove everything, the rebase will be aborted.
 #
-# test rebase
-# test rebase 2
-# test rebase 3
-# test 4
-# 5
-# 6
-#
-# test
-#
