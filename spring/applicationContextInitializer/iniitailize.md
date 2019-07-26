@@ -1,0 +1,7 @@
+ApplicationContextInitializer是容器初始化器
+- 在容器准备context上下文的时候调用
+- after设置environment和resourceLoader、classLoader
+- before装载BeanFactoryPostProcessor
+
+- apollo在初始化的时候，拉取remote或locate配置并解析，然后加载到environment.propertySources里
+
