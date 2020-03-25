@@ -76,3 +76,5 @@ systemctl reload docker
 
 - 删除本地镜像
 ```docker rmi ${docker_id}/${local_image}:${version}```
+
+- docker_id也可以换成organization_id
