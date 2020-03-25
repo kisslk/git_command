@@ -55,3 +55,24 @@ docker build -t companyevent:lastest .
 查看/etc/docker/daemon.json这个文件，把多余的删除  
 修改/etc/docker/daemon.json这个文件它立即起效可以使用命令为：  
 systemctl reload docker  
+
+
+#### 私有仓库
+
+- 登陆 
+```docker login```
+
+- 查看镜像
+```docker images```
+
+- 创建tag
+```docker tag ${local_image} ${docker_id}/${local_image}:${version}```
+
+- 推送镜像到仓库
+```docker push ${docker_id}/${local_image}:${version}```
+
+- 从仓库拉取镜像
+```docker pull ${docker_id}/${local_image}:${version}```
+
+- 删除本地镜像
+```docker rmi ${docker_id}/${local_image}:${version}```
