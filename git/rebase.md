@@ -1,5 +1,6 @@
 - git rebase -i HEAD~4 合并最近4次的提交记录
 
+```
 # Commands:
 # p, pick = use commit
 # r, reword = use commit, but edit the commit message
@@ -15,3 +16,4 @@
 #
 # However, if you remove everything, the rebase will be aborted.
 #
+```
